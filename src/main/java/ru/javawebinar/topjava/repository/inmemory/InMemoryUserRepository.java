@@ -37,8 +37,9 @@ public class InMemoryUserRepository implements UserRepository {
         log.info("save {}", user);
         if (user.isNew()) {
             user.setId(counter.incrementAndGet());
+            return repository.put(user.getId(), user);
         }
-        return repository.put(user.getId(), user);
+        return repository.computeIfPresent(user.getId(), (integer, oldUser) -> new User(oldUser));
     }
 
     @Override
